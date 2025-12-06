@@ -1,0 +1,5 @@
+treamlit
+groq
+python-dotenv
+pandas
+numpy

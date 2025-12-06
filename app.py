@@ -24,34 +24,54 @@ st.write("Enter your information and get a personalized, AI-generated supplement
 # USER INPUT FORM
 # -------------------------------------------------------------
 with st.form("user_form"):
-    st.subheader("Personal Information")
+    st.subheader("المعلومات الشخصية")
     col1, col2 = st.columns(2)
 
     with col1:
-        age = st.number_input("Age", 16, 80)
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        weight = st.number_input("Weight (kg)", 30, 200)
+        age = st.number_input("العمر", 16, 80)
+        gender = st.selectbox("الجنس", ["ذكر", "أنثى"])
+        weight = st.number_input("الوزن (كلغ)", 30, 200)
+
     with col2:
-        height = st.number_input("Height (cm)", 120, 220)
-        activity = st.selectbox("Activity Level", ["Sedentary", "1-2 workouts/week", "3+ workouts/week"])
-        sleep = st.number_input("Sleep Hours Per Night", 3, 12)
+        height = st.number_input("الطول (سم)", 120, 220)
+        activity = st.selectbox("مستوى النشاط", [
+            "خامل",
+            "تمارين 1-2 مرات في الأسبوع",
+            "تمارين 3 مرات أو أكثر في الأسبوع"
+        ])
+        sleep = st.number_input("عدد ساعات النوم في اليوم", 3, 12)
 
-    st.subheader("Goals & Health")
-    goal = st.selectbox("Main Goal", [
-        "Muscle Gain", "Weight Loss", "Improve Sleep", "Increase Energy", "Boost Immunity"
+    st.subheader("الأهداف والصحة العامة")
+    goal = st.multiselect("الأهداف الرئيسية", [
+        "زيادة الكتلة العضلية",
+        "خسارة الوزن",
+        "تحسين النوم",
+        "زيادة الطاقة",
+        "تقوية المناعة"
     ])
 
-    symptoms = st.multiselect("Symptoms", [
-        "Fatigue", "Stress", "Hair Loss", "Low Immunity", "Muscle Cramps", "Low Appetite"
+    symptoms = st.multiselect("الأعراض الحالية", [
+        "التعب",
+        "التوتر",
+        "تساقط الشعر",
+        "ضعف المناعة",
+        "تشنجات عضلية",
+        "قلة الشهية"
     ])
 
-    medical_flags = st.multiselect("Medical Conditions", [
-        "Kidney Issues", "Pregnant/Breastfeeding"
+    medical_flags = st.multiselect("الحالات الطبية", [
+        "مشاكل في الكلى",
+        "حامل / مرضعة"
     ])
 
-    protein_intake = st.selectbox("Protein Intake Level", ["Low", "Medium", "High"])
+    protein_intake = st.selectbox("مستوى استهلاك البروتين", [
+        "منخفض",
+        "متوسط",
+        "مرتفع"
+    ])
 
-    submitted = st.form_submit_button("Generate AI Recommendation")
+    submitted = st.form_submit_button("إنشاء توصية باستخدام الذكاء الاصطناعي")
+
 
 # -------------------------------------------------------------
 # ON SUBMIT → SEND TO AI
@@ -65,7 +85,7 @@ if submitted:
             "weight": weight,
             "height": height,
             "activity": activity,
-            "goal": goal,
+            "goals": goal,
             "sleep": sleep,
             "symptoms": symptoms,
             "medical_flags": medical_flags,
@@ -92,6 +112,7 @@ Return ONLY valid JSON in this format:
  "supplements": [
    {{
      "name": "",
+     "name_en": "",
      "why": "",
      "dosage": "",
      "timing": "",
@@ -101,6 +122,7 @@ Return ONLY valid JSON in this format:
  "food_equivalents": [],
  "general_advice": ""
 }}
+in arabic language
 """
 
         response = client.chat.completions.create(
@@ -129,6 +151,7 @@ Return ONLY valid JSON in this format:
     st.subheader("Recommended Supplements 💡")
     for s in data["supplements"]:
         st.markdown(f"### {s['name']}")
+        st.markdown(f"### {s['name_en']}")
         st.write(f"**Why:** {s['why']}")
         st.write(f"**Dosage:** {s['dosage']}")
         st.write(f"**Timing:** {s['timing']}")
